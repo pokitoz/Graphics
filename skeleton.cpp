@@ -30,9 +30,9 @@ vec3 indirectLightPowerPerArea = 0.5f * vec3(1, 1, 1);
 mat3 R(1.0f);
 float yaw = 0;
 
-vec3 rightt;
-vec3 down;
-vec3 forward;
+vec3 vec_right;
+vec3 vec_down;
+vec3 vec_forward;
 
 vec3 currentColor;
 
@@ -52,13 +52,12 @@ static void PixelShader(const Pixel &p) {
              lightPos.y - p.pos3d.y,
              lightPos.z - p.pos3d.z);
 
-	float matrix_dot_product = glm::dot(glm::normalize(dir),
-										glm::normalize(currentNormal));
+    float matrix_dot_product = glm::dot(glm::normalize(dir), glm::normalize(currentNormal));
 
-	float max_dot_product = std::max(matrix_dot_product, 0.0f);
+    float max_dot_product = std::max(matrix_dot_product, 0.0f);
 
-	// Sphere 4*dir^2*pi
-	float surface_area = static_cast<float>(4 * pow(glm::length(dir), 2) * M_PI);
+    // Sphere 4*dir^2*pi
+    float surface_area = static_cast<float>(4 * pow(glm::length(dir), 2) * M_PI);
 
     vec3 D = lightPower * (max_dot_product / surface_area);
 
@@ -112,9 +111,9 @@ void Update() {
 
   Uint8 *keystate = SDL_GetKeyState(0);
   if (keystate[SDLK_UP]) {
-    cameraPos += forward * 0.2f;
+    cameraPos += vec_forward * 0.2f;
   } else if (keystate[SDLK_DOWN]) {
-    cameraPos -= forward * 0.2f;
+    cameraPos -= vec_forward * 0.2f;
   } else if (keystate[SDLK_RIGHT]) {
     yaw += 0.01;
     updateMatrix();
@@ -122,21 +121,21 @@ void Update() {
     yaw -= 0.01;
     updateMatrix();
   } else if (keystate[SDLK_RSHIFT]) {
-    cameraPos += 0.4f * down;
+    cameraPos += 0.4f * vec_down;
   } else if (keystate[SDLK_RCTRL]) {
-    cameraPos -= 0.4f * down;
+    cameraPos -= 0.4f * vec_down;
   } else if (keystate[SDLK_z]) {
-    lightPos += 0.4f * forward;
+    lightPos += 0.4f * vec_forward;
   } else if (keystate[SDLK_s]) {
-    lightPos -= 0.4f * forward;
+    lightPos -= 0.4f * vec_forward;
   } else if (keystate[SDLK_d]) {
-    lightPos += 0.4f * rightt;
+    lightPos += 0.4f * vec_right;
   } else if (keystate[SDLK_q]) {
-    lightPos -= 0.4f * rightt;
+    lightPos -= 0.4f * vec_right;
   } else if (keystate[SDLK_r]) {
-    lightPos -= 0.4f * down;
+    lightPos -= 0.4f * vec_down;
   } else if (keystate[SDLK_f]) {
-    lightPos += 0.4f * down;
+    lightPos += 0.4f * vec_down;
   }
 
 }
@@ -159,9 +158,9 @@ void updateMatrix() {
    *  sin  0   cos
    */
   R = mat3(c1, c2, c3);
-  rightt  = vec3(R[0][0], R[0][1], R[0][2]);
-  down    = vec3(R[1][0], R[1][1], R[1][2]);
-  forward = vec3(R[2][0], R[2][1], R[2][2]);
+  vec_right  = vec3(R[0][0], R[0][1], R[0][2]);
+  vec_down    = vec3(R[1][0], R[1][1], R[1][2]);
+  vec_forward = vec3(R[2][0], R[2][1], R[2][2]);
 }
 
 void Draw() {
